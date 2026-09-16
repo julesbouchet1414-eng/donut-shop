@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import DonutLogo from './DonutLogo';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -33,9 +34,14 @@ export default function AdminLogin() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white/70 rounded-xl p-6 border border-black/5 space-y-4">
+    <form onSubmit={handleSubmit} className="card animate-pop-in space-y-4 p-7">
+      <div className="text-center">
+        <DonutLogo size={72} variant="choco" className="mx-auto animate-float" />
+        <h1 className="mt-3 font-display text-2xl font-bold">Espace admin</h1>
+      </div>
+
       <div>
-        <label className="block text-sm font-medium mb-1" htmlFor="admin-password">
+        <label className="mb-1 block text-sm font-semibold" htmlFor="admin-password">
           Mot de passe admin
         </label>
         <input
@@ -43,12 +49,18 @@ export default function AdminLogin() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 rounded-lg border border-black/10"
+          className="field"
           autoComplete="current-password"
         />
       </div>
-      {error && <p className="text-red-600 text-sm">{error}</p>}
-      <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-40">
+
+      {error && (
+        <p className="animate-fade-in rounded-2xl bg-donut-coral/15 px-4 py-2 text-sm font-semibold text-donut-coral">
+          {error}
+        </p>
+      )}
+
+      <button type="submit" disabled={loading} className="btn-primary w-full">
         {loading ? 'Connexion...' : 'Connexion'}
       </button>
     </form>

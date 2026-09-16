@@ -6,11 +6,13 @@ import { useCart } from './CartProvider';
 import { formatEUR, priceForM } from '@/lib/pricing';
 import { CATALOG_MAP } from '@/lib/catalog';
 import type { CartLine } from '@/lib/types';
+import DonutLogo from './DonutLogo';
+import SprinkleRain from './SprinkleRain';
 
 const PSEUDO_RE = /^[A-Za-z0-9_]{3,16}$/;
 
 function lineLabel(line: CartLine): string {
-  if (line.kind === 'money') return `💰 ${line.amountM.toLocaleString('fr-FR')} M`;
+  if (line.kind === 'money') return `${line.amountM.toLocaleString('fr-FR')} M de Donuts`;
   if (line.kind === 'item') {
     const item = CATALOG_MAP[line.itemId];
     return item ? `${item.icon} ${item.name}` : 'Item inconnu';
@@ -19,7 +21,7 @@ function lineLabel(line: CartLine): string {
     const item = CATALOG_MAP[s.itemId];
     return item ? `${item.icon}×${s.qty}` : '?';
   });
-  return `📦 Shulker (${parts.join(' ')})`;
+  return `Shulker (${parts.join(' ')})`;
 }
 
 function lineUnitValueM(line: CartLine): number {
@@ -87,29 +89,41 @@ export default function CartPageClient() {
 
   if (step === 'success' && orderResult) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-16 text-center">
-        <p className="text-5xl mb-4">🍩✅</p>
-        <h1 className="font-pixel text-base sm:text-xl mb-4">Commande envoyée !</h1>
-        <p className="mb-2">
-          Numéro de commande : <span className="font-mono font-bold">{orderResult.orderId}</span>
-        </p>
-        <p className="mb-6 text-xl font-bold">{formatEUR(orderResult.totalEUR)}</p>
-        <p className="text-donut-chocoDark/70 mb-8">
-          Contacte-nous en donnant ce numéro de commande pour finaliser le paiement et la livraison en jeu.
-        </p>
-        <Link href="/" className="btn-primary inline-block">
-          Retour à l&apos;accueil
-        </Link>
+      <div className="relative mx-auto max-w-xl px-4 py-20 text-center">
+        <SprinkleRain />
+        <div className="relative z-10">
+          <DonutLogo size={150} className="mx-auto animate-stamp" title="Commande confirmée" />
+          <h1 className="mt-6 font-display text-4xl font-bold">
+            <span className="title-gradient">Commande envoyée !</span>
+          </h1>
+
+          <div className="card mt-8 p-6">
+            <p className="text-sm text-donut-choco/70">Numéro de commande</p>
+            <p className="mt-1 break-all font-mono text-sm font-bold">{orderResult.orderId}</p>
+            <p className="mt-4">
+              <span className="price-tag text-3xl">{formatEUR(orderResult.totalEUR)}</span>
+            </p>
+          </div>
+
+          <p className="mt-6 text-donut-choco/75">
+            Contacte-nous avec ce numéro de commande pour finaliser le paiement et la livraison en jeu.
+          </p>
+
+          <Link href="/" className="btn-primary mt-8">
+            Retour à l&apos;accueil
+          </Link>
+        </div>
       </div>
     );
   }
 
   if (lines.length === 0) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-16 text-center">
-        <p className="text-5xl mb-4">🛒</p>
-        <h1 className="font-pixel text-base sm:text-xl mb-4">Panier vide</h1>
-        <div className="flex gap-3 justify-center flex-wrap">
+      <div className="mx-auto max-w-xl px-4 py-24 text-center">
+        <DonutLogo size={130} variant="choco" className="mx-auto animate-float opacity-70" />
+        <h1 className="mt-6 font-display text-3xl font-bold">Ton panier est vide</h1>
+        <p className="mt-2 text-donut-choco/70">Il est temps de le remplir de Donuts et d&apos;items rares.</p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link href="/argent" className="btn-primary">
             Acheter de l&apos;argent
           </Link>
@@ -122,40 +136,48 @@ export default function CartPageClient() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="font-pixel text-lg sm:text-2xl mb-6">Mon panier</h1>
+    <div className="mx-auto max-w-3xl px-4 py-12">
+      <div className="mb-8 flex animate-slide-up items-center gap-4">
+        <DonutLogo size={64} className="animate-float" />
+        <h1 className="font-display text-3xl font-bold sm:text-4xl">
+          <span className="title-gradient">Mon panier</span>
+        </h1>
+      </div>
 
-      <div className="space-y-3 mb-8">
+      <div className="stagger mb-8 space-y-3">
         {lines.map((line) => (
-          <div key={line.id} className="bg-white/70 rounded-xl p-4 flex items-center gap-3 sm:gap-4 border border-black/5">
-            <span className="flex-1 text-sm min-w-0">{lineLabel(line)}</span>
-            <div className="flex items-center border border-black/10 rounded-lg shrink-0">
+          <div key={line.id} className="card card-hover flex items-center gap-3 p-4 sm:gap-4">
+            <span className="min-w-0 flex-1 text-sm font-medium">{lineLabel(line)}</span>
+
+            <div className="flex shrink-0 items-center overflow-hidden rounded-full border-2 border-donut-pinkLight bg-white/80">
               <button
                 type="button"
                 onClick={() => setLineQty(line.id, line.qty - 1)}
                 disabled={line.qty <= 1}
-                className="px-2 py-1 disabled:opacity-30"
+                className="px-2.5 py-1 font-bold text-donut-pinkDark transition hover:bg-donut-pinkLight disabled:opacity-30"
                 aria-label="Diminuer la quantité"
               >
-                -
+                −
               </button>
-              <span className="px-2 text-sm">{line.qty}</span>
+              <span className="min-w-6 px-1 text-center text-sm font-bold">{line.qty}</span>
               <button
                 type="button"
                 onClick={() => setLineQty(line.id, line.qty + 1)}
-                className="px-2 py-1"
+                className="px-2.5 py-1 font-bold text-donut-pinkDark transition hover:bg-donut-pinkLight"
                 aria-label="Augmenter la quantité"
               >
                 +
               </button>
             </div>
-            <span className="font-bold w-20 text-right shrink-0">
+
+            <span className="w-20 shrink-0 text-right font-display text-lg font-bold text-donut-pinkDark">
               {formatEUR(priceForM(lineUnitValueM(line) * line.qty))}
             </span>
+
             <button
               type="button"
               onClick={() => removeLine(line.id)}
-              className="text-red-600 hover:text-red-800 shrink-0"
+              className="shrink-0 rounded-full p-1.5 text-donut-choco/40 transition hover:bg-donut-coral/15 hover:text-donut-coral"
               aria-label="Supprimer"
             >
               ✕
@@ -164,64 +186,81 @@ export default function CartPageClient() {
         ))}
       </div>
 
-      <div className="flex justify-between items-center mb-8 text-xl font-bold border-t border-black/10 pt-4">
-        <span>Total</span>
-        <span>{formatEUR(total)}</span>
+      <div className="card mb-8 flex items-center justify-between p-5">
+        <span className="font-display text-xl font-semibold">Total</span>
+        <span className="price-tag text-3xl">{formatEUR(total)}</span>
       </div>
 
       {step === 'cart' && (
-        <button type="button" onClick={() => setStep('checkout')} className="btn-primary w-full text-lg py-3">
+        <button type="button" onClick={() => setStep('checkout')} className="btn-primary w-full py-4 text-lg">
           Passer la commande
         </button>
       )}
 
       {step === 'checkout' && (
-        <div className="bg-white/70 rounded-xl p-6 border border-black/5 space-y-4">
-          <h2 className="font-semibold text-lg">Finaliser la commande</h2>
+        <div className="card animate-slide-up space-y-4 p-6">
+          <div className="flex items-center gap-3">
+            <DonutLogo size={44} variant="gold" />
+            <h2 className="font-display text-2xl font-semibold">Finaliser la commande</h2>
+          </div>
+
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="pseudo">
+            <label className="mb-1 block text-sm font-semibold" htmlFor="pseudo">
               Pseudo Minecraft
             </label>
             <input
               id="pseudo"
               value={pseudo}
               onChange={(e) => setPseudo(e.target.value.trim())}
-              className="w-full px-3 py-2 rounded-lg border border-black/10"
+              className="field"
               placeholder="Ton pseudo exact"
               autoComplete="off"
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="pseudo-confirm">
+            <label className="mb-1 block text-sm font-semibold" htmlFor="pseudo-confirm">
               Confirme ton pseudo Minecraft
             </label>
             <input
               id="pseudo-confirm"
               value={pseudoConfirm}
               onChange={(e) => setPseudoConfirm(e.target.value.trim())}
-              className="w-full px-3 py-2 rounded-lg border border-black/10"
+              className="field"
               placeholder="Retape ton pseudo"
               autoComplete="off"
             />
             {pseudoConfirm.length > 0 && !pseudosMatch && (
-              <p className="text-red-600 text-xs mt-1">Les pseudos ne correspondent pas.</p>
+              <p className="mt-1 animate-fade-in text-xs font-semibold text-donut-coral">
+                Les pseudos ne correspondent pas.
+              </p>
+            )}
+            {pseudosMatch && pseudoValid && (
+              <p className="mt-1 animate-fade-in text-xs font-semibold text-emerald-600">Les pseudos correspondent.</p>
             )}
           </div>
+
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="discord">
-              Discord (optionnel)
+            <label className="mb-1 block text-sm font-semibold" htmlFor="discord">
+              Discord <span className="font-normal text-donut-choco/50">(optionnel)</span>
             </label>
             <input
               id="discord"
               value={discord}
               onChange={(e) => setDiscord(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-black/10"
+              className="field"
               placeholder="pseudo Discord"
               autoComplete="off"
             />
           </div>
-          {error && <p className="text-red-600 text-sm">{error}</p>}
-          <div className="flex gap-3">
+
+          {error && (
+            <p className="animate-fade-in rounded-2xl bg-donut-coral/15 px-4 py-2 text-sm font-semibold text-donut-coral">
+              {error}
+            </p>
+          )}
+
+          <div className="flex gap-3 pt-1">
             <button type="button" onClick={() => setStep('cart')} className="btn-secondary flex-1">
               Retour
             </button>
@@ -229,7 +268,7 @@ export default function CartPageClient() {
               type="button"
               onClick={handleSubmit}
               disabled={submitting || !pseudoValid || !pseudosMatch}
-              className="btn-primary flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="btn-primary flex-1"
             >
               {submitting ? 'Envoi...' : 'Envoyer ma commande'}
             </button>

@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { CATALOG, CATEGORIES } from '@/lib/catalog';
 import { formatEUR, priceForM } from '@/lib/pricing';
+import DonutLogo from './DonutLogo';
 
 export default function ItemPickerModal({
   onPick,
@@ -24,33 +25,39 @@ export default function ItemPickerModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex animate-fade-in items-center justify-center bg-donut-chocoDark/60 p-4 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="bg-donut-cream rounded-xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden"
+        className="flex max-h-[82vh] w-full max-w-2xl animate-pop-in flex-col overflow-hidden rounded-3xl border border-white/70 bg-donut-cream shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b border-black/10 flex items-center justify-between gap-3">
-          <h3 className="font-pixel text-xs sm:text-sm">Choisir un item</h3>
-          <button type="button" onClick={onClose} className="text-xl leading-none" aria-label="Fermer">
+        <div className="flex items-center justify-between gap-3 border-b border-donut-pinkLight bg-white/60 p-4">
+          <div className="flex items-center gap-3">
+            <DonutLogo size={36} className="animate-float" />
+            <h3 className="font-display text-xl font-semibold">Choisir un item</h3>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-lg transition hover:bg-donut-pinkLight"
+            aria-label="Fermer"
+          >
             ✕
           </button>
         </div>
-        <div className="p-4 flex flex-col sm:flex-row gap-2 border-b border-black/10">
+
+        <div className="flex flex-col gap-2 border-b border-donut-pinkLight p-4 sm:flex-row">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher un item..."
-            className="flex-1 px-3 py-2 rounded-lg border border-black/10"
+            className="field flex-1"
+            autoFocus
           />
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-black/10"
-          >
+          <select value={category} onChange={(e) => setCategory(e.target.value)} className="field sm:w-56">
             <option value="all">Toutes catégories</option>
             {CATEGORIES.map((c) => (
               <option key={c.id} value={c.id}>
@@ -59,28 +66,30 @@ export default function ItemPickerModal({
             ))}
           </select>
         </div>
-        <div className="overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {filtered.map((item) => (
+
+        <div className="grid grid-cols-1 gap-2 overflow-y-auto p-4 sm:grid-cols-2">
+          {filtered.map((item, i) => (
             <button
               type="button"
               key={item.id}
               onClick={() => onPick(item.id)}
-              className="flex items-center gap-3 p-3 rounded-lg border border-black/10 hover:border-donut-pinkDark hover:bg-donut-pink/10 text-left"
+              className="group flex animate-slide-up items-center gap-3 rounded-2xl border-2 border-transparent bg-white/70 p-3 text-left transition hover:-translate-y-0.5 hover:border-donut-pink hover:bg-white hover:shadow-soft"
+              style={{ animationDelay: `${Math.min(i, 10) * 25}ms` }}
             >
-              <span className="text-2xl shrink-0">{item.icon}</span>
-              <span className="flex-1 min-w-0">
-                <span className="block font-medium text-sm leading-snug">{item.name}</span>
-                <span className="block text-xs text-donut-chocoDark/60">
-                  {item.valueM.toLocaleString('fr-FR')} M
-                </span>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-donut-pinkLight to-donut-creamDark text-2xl transition-transform group-hover:scale-110">
+                {item.icon}
               </span>
-              <span className="font-bold text-sm shrink-0">{formatEUR(priceForM(item.valueM))}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold leading-snug">{item.name}</span>
+                <span className="block text-xs text-donut-choco/60">{item.valueM.toLocaleString('fr-FR')} M</span>
+              </span>
+              <span className="shrink-0 text-sm font-bold text-donut-pinkDark">
+                {formatEUR(priceForM(item.valueM))}
+              </span>
             </button>
           ))}
           {filtered.length === 0 && (
-            <p className="text-sm text-donut-chocoDark/60 col-span-2 text-center py-8">
-              Aucun item trouvé.
-            </p>
+            <p className="col-span-2 py-10 text-center text-sm text-donut-choco/60">Aucun item trouvé.</p>
           )}
         </div>
       </div>

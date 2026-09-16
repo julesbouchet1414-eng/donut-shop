@@ -1,15 +1,16 @@
 import ShulkerBuilder from '@/components/ShulkerBuilder';
+import PageHeader from '@/components/PageHeader';
 
 export const metadata = { title: 'Créer un Shulker — Donut Shop' };
 
 export default function ShulkerPage() {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <h1 className="font-pixel text-base sm:text-2xl mb-2">Compose ta Shulker</h1>
-      <p className="text-donut-chocoDark/70 mb-8">
-        Clique sur un emplacement pour ajouter un item cher, ajuste les quantités, puis ajoute ta shulker
-        au panier.
-      </p>
+    <div className="mx-auto max-w-6xl px-4 py-12">
+      <PageHeader
+        title="Compose ta Shulker"
+        subtitle="Clique sur un emplacement pour y glisser un item cher, ajuste les quantités, puis ajoute la shulker complète au panier."
+        variant="mint"
+      />
       <ShulkerBuilder />
     </div>
   );

@@ -4,6 +4,14 @@ import { useState } from 'react';
 import { MONEY_PRESETS } from '@/lib/catalog';
 import { formatEUR, priceForM } from '@/lib/pricing';
 import { useCart } from './CartProvider';
+import DonutLogo, { type GlazeVariant } from './DonutLogo';
+import SprinkleBurst from './SprinkleBurst';
+
+const VARIANTS: GlazeVariant[] = ['pink', 'gold', 'mint', 'choco', 'pink', 'gold'];
+
+function shortAmount(amountM: number): string {
+  return amountM >= 1000 ? `${(amountM / 1000).toLocaleString('fr-FR')} Md` : `${amountM} M`;
+}
 
 export default function MoneyShop() {
   const { addMoney } = useCart();
@@ -14,54 +22,85 @@ export default function MoneyShop() {
     if (amountM <= 0) return;
     addMoney(amountM);
     setAddedId(key);
-    setTimeout(() => setAddedId(null), 1500);
+    setTimeout(() => setAddedId(null), 1400);
   }
 
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">
-        {MONEY_PRESETS.map((p) => (
-          <div
-            key={p.id}
-            className="bg-white/70 rounded-xl p-5 text-center border border-black/5 shadow-sm relative"
-          >
+      <div className="stagger mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {MONEY_PRESETS.map((p, i) => (
+          <div key={p.id} className="card card-hover group relative overflow-hidden p-6 text-center">
             {p.label && (
-              <span className="absolute top-2 right-2 text-xs bg-donut-pink text-donut-chocoDark px-2 py-0.5 rounded-full">
+              <span className="absolute right-4 top-4 rounded-full bg-donut-pinkDark px-3 py-1 text-xs font-bold text-white">
                 {p.label}
               </span>
             )}
-            <p className="text-3xl mb-1">💰</p>
-            <p className="font-semibold">{p.amountM.toLocaleString('fr-FR')} M</p>
-            <p className="text-2xl font-bold my-2">{formatEUR(priceForM(p.amountM))}</p>
-            <button type="button" onClick={() => handleAdd(p.amountM, p.id)} className="btn-primary w-full text-sm">
-              {addedId === p.id ? '✅ Ajouté' : 'Ajouter au panier'}
+
+            <div className="relative mx-auto w-fit">
+              <SprinkleBurst show={addedId === p.id} />
+              <DonutLogo
+                size={128}
+                variant={VARIANTS[i % VARIANTS.length]}
+                className="transition-transform duration-500 group-hover:rotate-12 group-hover:scale-105"
+              />
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <span className="rounded-full bg-white/85 px-2 py-0.5 font-display text-sm font-bold text-donut-chocoDark shadow">
+                  {shortAmount(p.amountM)}
+                </span>
+              </span>
+            </div>
+
+            <p className="mt-4 text-sm font-medium text-donut-choco/70">
+              {p.amountM.toLocaleString('fr-FR')} Donuts
+            </p>
+            <p className="my-3">
+              <span className="price-tag text-2xl">{formatEUR(priceForM(p.amountM))}</span>
+            </p>
+
+            <button type="button" onClick={() => handleAdd(p.amountM, p.id)} className="btn-primary w-full">
+              {addedId === p.id ? 'Ajouté !' : 'Ajouter au panier'}
             </button>
           </div>
         ))}
       </div>
 
-      <div className="bg-white/70 rounded-xl p-6 border border-black/5 shadow-sm max-w-md">
-        <h2 className="font-semibold mb-3">Montant personnalisé</h2>
-        <div className="flex items-center gap-3 mb-3">
+      <div className="card relative mx-auto max-w-lg overflow-hidden p-7">
+        <div className="mb-5 flex items-center gap-3">
+          <DonutLogo size={52} variant="gold" className="animate-float" />
+          <div>
+            <h2 className="font-display text-2xl font-semibold">Montant personnalisé</h2>
+            <p className="text-sm text-donut-choco/70">Le prix suit exactement le même taux.</p>
+          </div>
+        </div>
+
+        <div className="mb-4 flex items-center gap-3">
           <input
             type="number"
             min={10}
             step={10}
             value={custom}
             onChange={(e) => setCustom(Math.max(0, Number(e.target.value) || 0))}
-            className="flex-1 px-3 py-2 rounded-lg border border-black/10"
+            className="field flex-1 font-display text-lg"
+            aria-label="Montant en millions de Donuts"
           />
-          <span className="font-medium">M</span>
+          <span className="font-display text-lg font-semibold">M</span>
         </div>
-        <p className="text-xl font-bold mb-3">{formatEUR(priceForM(custom))}</p>
-        <button
-          type="button"
-          onClick={() => handleAdd(custom, 'custom')}
-          disabled={custom <= 0}
-          className="btn-primary w-full disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          {addedId === 'custom' ? '✅ Ajouté' : 'Ajouter au panier'}
-        </button>
+
+        <p className="mb-5">
+          <span className="price-tag text-2xl">{formatEUR(priceForM(custom))}</span>
+        </p>
+
+        <div className="relative">
+          <SprinkleBurst show={addedId === 'custom'} />
+          <button
+            type="button"
+            onClick={() => handleAdd(custom, 'custom')}
+            disabled={custom <= 0}
+            className="btn-primary w-full"
+          >
+            {addedId === 'custom' ? 'Ajouté !' : 'Ajouter au panier'}
+          </button>
+        </div>
       </div>
     </div>
   );
