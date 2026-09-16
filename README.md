@@ -37,9 +37,20 @@ Le site est alors sur http://localhost:3000, l'admin sur http://localhost:3000/a
 
 ## Stockage des commandes
 
-Les commandes sont enregistrées côté serveur dans `var/orders.json` (créé automatiquement, ignoré par git). Le prix envoyé par le client n'est jamais utilisé tel quel : le serveur (`app/api/orders/route.ts`) revalide chaque ligne du panier contre le catalogue et recalcule le total.
+Les commandes sont enregistrées côté serveur dans un fichier `orders.json` (créé automatiquement, ignoré par git). Le prix envoyé par le client n'est jamais utilisé tel quel : le serveur (`app/api/orders/route.ts`) revalide chaque ligne du panier contre le catalogue et recalcule le total.
 
-Pour un déploiement sur une plateforme serverless (Vercel, etc.), le système de fichiers n'est pas persistant : remplace `lib/ordersStore.ts` par une vraie base de données avant d'aller en production. En auto-hébergement (VPS, `npm run build && npm start`), le fichier JSON suffit pour un petit shop.
+`lib/ordersStore.ts` choisit lui-même où écrire : `var/orders.json` (persistant) en local ou sur un serveur classique, et le dossier temporaire du système (non persistant entre deux invocations froides) si le système de fichiers du projet est en lecture seule — c'est le cas sur Vercel. Ça évite un crash au moment d'envoyer une commande, mais ce n'est **pas** un vrai stockage pour un shop actif sur ce type de plateforme : remplace `lib/ordersStore.ts` par une vraie base de données (Vercel Postgres, Vercel KV, etc.) avant d'encaisser de vraies commandes en production.
+
+## Déploiement sur Vercel
+
+Le moyen le plus simple d'obtenir une URL publique, sans rien partager avec qui que ce soit :
+
+1. Sur [vercel.com](https://vercel.com), *Add New → Project*, puis importe le repo GitHub `donut-shop`.
+2. Choisis la branche `claude/sweet-pasteur-g3kkwa` (ou celle sur laquelle tu es). Next.js est détecté automatiquement, aucune configuration nécessaire.
+3. Dans *Environment Variables*, ajoute `ADMIN_PASSWORD` (et `NEXT_PUBLIC_CONTACT_DISCORD` si tu veux l'afficher sur la page de confirmation).
+4. *Deploy*. Le site est en ligne en 1-2 minutes sur une URL `*.vercel.app`.
+
+Voir la section précédente pour la limite de ce déploiement (commandes non durables tant qu'aucune vraie base de données n'est branchée).
 
 ## Stack
 
