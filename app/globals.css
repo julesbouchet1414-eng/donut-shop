@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-donut-cream text-donut-chocoDark;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-donut-pink text-donut-chocoDark font-semibold px-4 py-2 rounded-lg hover:bg-donut-pinkDark hover:text-white transition;
+  }
+  .btn-secondary {
+    @apply bg-white text-donut-chocoDark font-semibold px-4 py-2 rounded-lg border border-black/10 hover:bg-donut-cream transition;
+  }
+  .mc-panel {
+    background: #c6c6c6;
+    box-shadow:
+      inset -2px -2px 0 #373737,
+      inset 2px 2px 0 #ffffff;
+  }
+  .mc-slot {
+    @apply relative flex items-center justify-center cursor-pointer;
+    width: clamp(28px, 8vw, 48px);
+    height: clamp(28px, 8vw, 48px);
+    background: #8b8b8b;
+    border: 3px solid;
+    border-color: #373737 #ffffff #ffffff #373737;
+  }
+  .mc-slot:hover {
+    background: #9c9c9c;
+  }
+  .qty-badge {
+    @apply absolute font-bold text-white;
+    bottom: 1px;
+    right: 3px;
+    font-size: 10px;
+    text-shadow:
+      1px 1px 0 #000,
+      -1px -1px 0 #000;
+  }
+}

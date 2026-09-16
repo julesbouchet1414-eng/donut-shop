@@ -1,0 +1,18 @@
+# deps
+node_modules
+
+# next
+.next
+out
+
+# env
+.env
+.env.local
+.env.*.local
+
+# order database (runtime data, not source)
+var/
+
+# misc
+.DS_Store
+npm-debug.log*
