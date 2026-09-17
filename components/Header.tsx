@@ -36,7 +36,7 @@ export default function Header() {
           <span className="transition-transform duration-200 group-hover:-translate-y-1">
             <DonutLogo size={36} title="Donut Shop" />
           </span>
-          <span className="font-pixel text-[17px] leading-tight text-white text-shadow-mc sm:text-sm">
+          <span className="font-pixel text-lg font-bold leading-tight text-white text-shadow-mc sm:text-xl">
             DONUT<span className="text-mc-pink"> SHOP</span>
           </span>
         </Link>
