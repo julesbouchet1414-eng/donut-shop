@@ -65,6 +65,20 @@ export async function addOrder(order: StoredOrder): Promise<void> {
   await writeChain;
 }
 
+export async function deleteOrder(id: string): Promise<boolean> {
+  let removed = false;
+  writeChain = writeChain.then(async () => {
+    const orders = await readOrders();
+    const next = orders.filter((o) => o.id !== id);
+    removed = next.length !== orders.length;
+    if (removed) {
+      await fs.writeFile(await dataFile(), JSON.stringify(next, null, 2), 'utf8');
+    }
+  });
+  await writeChain;
+  return removed;
+}
+
 export async function updateOrderStatus(
   id: string,
   status: StoredOrder['status']

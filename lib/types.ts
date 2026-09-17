@@ -1,14 +1,20 @@
 export type Category = 'equipement' | 'livres' | 'consommables' | 'blocs';
 
+export type Rarity = 'commun' | 'rare' | 'epique' | 'legendaire';
+
 export interface CatalogItem {
   id: string;
   name: string;
   category: Category;
+  /** Emoji, utilisé uniquement dans les libellés en texte brut. */
   icon: string;
+  /** Clé de l'icône pixel-art affichée dans l'interface. */
+  sprite: string;
   /** Valeur de l'item en jeu, en millions de Donuts. */
   valueM: number;
   /** Taille de stack max (comme dans Minecraft : 1 ou 64). */
   maxStack: number;
+  rarity: Rarity;
 }
 
 export interface MoneyPreset {

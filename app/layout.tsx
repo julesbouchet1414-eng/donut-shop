@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
-import { Press_Start_2P, Inter, Fredoka } from 'next/font/google';
+import { Pixelify_Sans, Inter } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/components/CartProvider';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackgroundDecor from '@/components/BackgroundDecor';
 
-const pixelFont = Press_Start_2P({ weight: '400', subsets: ['latin'], variable: '--font-pixel' });
-const displayFont = Fredoka({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-display' });
-const inter = Inter({ subsets: ['latin'] });
+// Police pixel qui, contrairement à Press Start 2P, contient les accents
+// français (É, Ç, à) : sans ça chaque accent bascule sur une police de secours.
+const pixelFont = Pixelify_Sans({ weight: ['400', '600', '700'], subsets: ['latin'], variable: '--font-pixel' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata: Metadata = {
   title: 'Donut Shop — Argent & Items Donut SMP',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-      <body className={`${inter.className} ${pixelFont.variable} ${displayFont.variable}`}>
+      <body className={`${inter.className} ${pixelFont.variable} ${inter.variable}`}>
         <CartProvider>
           <BackgroundDecor />
           <Header />

@@ -1,32 +1,53 @@
-import DonutLogo from './DonutLogo';
-import type { GlazeVariant } from './DonutLogo';
-
-const FLOATING: { top: string; left: string; size: number; variant: GlazeVariant; delay: string; opacity: string }[] = [
-  { top: '8%', left: '4%', size: 110, variant: 'pink', delay: '0s', opacity: 'opacity-[0.16]' },
-  { top: '26%', left: '86%', size: 140, variant: 'gold', delay: '1.4s', opacity: 'opacity-[0.14]' },
-  { top: '62%', left: '8%', size: 90, variant: 'mint', delay: '2.6s', opacity: 'opacity-[0.13]' },
-  { top: '78%', left: '78%', size: 120, variant: 'choco', delay: '0.8s', opacity: 'opacity-[0.12]' },
-  { top: '45%', left: '48%', size: 70, variant: 'pink', delay: '3.2s', opacity: 'opacity-[0.1]' },
-];
+const PARTICLES = Array.from({ length: 22 }, (_, i) => ({
+  left: `${(i * 53) % 100}%`,
+  delay: `${(i % 11) * 0.9}s`,
+  duration: `${9 + (i % 6) * 2.5}s`,
+  size: i % 3 === 0 ? 3 : 2,
+  color: ['#b46cff', '#ff4f9b', '#4ee2ec', '#ffb52e'][i % 4],
+}));
 
 export default function BackgroundDecor() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      {FLOATING.map((d, i) => (
-        <div
-          key={i}
-          className={`absolute animate-float-slow ${d.opacity}`}
-          style={{ top: d.top, left: d.left, animationDelay: d.delay }}
-        >
-          <DonutLogo size={d.size} variant={d.variant} />
-        </div>
-      ))}
+      {/* Grille de blocs, façon monde Minecraft vu de loin */}
       <div
-        className="absolute inset-0 opacity-[0.045]"
+        className="absolute inset-0 opacity-[0.06]"
         style={{
-          backgroundImage: 'radial-gradient(circle, #5b3a29 1.5px, transparent 1.5px)',
-          backgroundSize: '26px 26px',
+          backgroundImage:
+            'linear-gradient(to right, #b46cff 1px, transparent 1px), linear-gradient(to bottom, #b46cff 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
         }}
+      />
+
+      {/* Faisceau de beacon */}
+      <div
+        className="absolute left-1/2 top-0 h-[70vh] w-40 -translate-x-1/2 animate-beam opacity-30"
+        style={{
+          background: 'linear-gradient(180deg, rgba(180,108,255,0.55), rgba(180,108,255,0))',
+          filter: 'blur(28px)',
+        }}
+      />
+
+      {/* Particules qui montent, façon portail du Nether */}
+      {PARTICLES.map((p, i) => (
+        <span
+          key={i}
+          className="absolute bottom-0 block"
+          style={{
+            left: p.left,
+            width: p.size,
+            height: p.size,
+            background: p.color,
+            boxShadow: `0 0 8px ${p.color}`,
+            animation: `rain ${p.duration} linear ${p.delay} infinite reverse`,
+          }}
+        />
+      ))}
+
+      {/* Vignette */}
+      <div
+        className="absolute inset-0"
+        style={{ background: 'radial-gradient(ellipse at center, transparent 45%, rgba(3,2,6,0.75) 100%)' }}
       />
     </div>
   );

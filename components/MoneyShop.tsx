@@ -2,16 +2,12 @@
 
 import { useState } from 'react';
 import { MONEY_PRESETS } from '@/lib/catalog';
-import { formatEUR, priceForM } from '@/lib/pricing';
+import { formatEUR, formatM, priceForM } from '@/lib/pricing';
 import { useCart } from './CartProvider';
 import DonutLogo, { type GlazeVariant } from './DonutLogo';
 import SprinkleBurst from './SprinkleBurst';
 
-const VARIANTS: GlazeVariant[] = ['pink', 'gold', 'mint', 'choco', 'pink', 'gold'];
-
-function shortAmount(amountM: number): string {
-  return amountM >= 1000 ? `${(amountM / 1000).toLocaleString('fr-FR')} Md` : `${amountM} M`;
-}
+const VARIANTS: GlazeVariant[] = ['pink', 'gold', 'mint', 'purple', 'choco', 'gold'];
 
 export default function MoneyShop() {
   const { addMoney } = useCart();
@@ -22,54 +18,49 @@ export default function MoneyShop() {
     if (amountM <= 0) return;
     addMoney(amountM);
     setAddedId(key);
-    setTimeout(() => setAddedId(null), 1400);
+    setTimeout(() => setAddedId(null), 1300);
   }
 
   return (
     <div>
-      <div className="stagger mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="stagger mb-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {MONEY_PRESETS.map((p, i) => (
-          <div key={p.id} className="card card-hover group relative overflow-hidden p-6 text-center">
+          <div key={p.id} className="panel panel-hover group relative p-5 text-center">
             {p.label && (
-              <span className="absolute right-4 top-4 rounded-full bg-donut-pinkDark px-3 py-1 text-xs font-bold text-white">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 border-2 border-night-900 bg-mc-gold px-2 py-0.5 font-pixel text-[12px] uppercase text-night-900">
                 {p.label}
               </span>
             )}
 
-            <div className="relative mx-auto w-fit">
+            <div className="relative mx-auto mt-2 w-fit">
               <SprinkleBurst show={addedId === p.id} />
               <DonutLogo
-                size={128}
+                size={96}
                 variant={VARIANTS[i % VARIANTS.length]}
-                className="transition-transform duration-500 group-hover:rotate-12 group-hover:scale-105"
+                className="transition-transform duration-200 group-hover:-translate-y-1.5"
               />
-              <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <span className="rounded-full bg-white/85 px-2 py-0.5 font-display text-sm font-bold text-donut-chocoDark shadow">
-                  {shortAmount(p.amountM)}
-                </span>
-              </span>
             </div>
 
-            <p className="mt-4 text-sm font-medium text-donut-choco/70">
-              {p.amountM.toLocaleString('fr-FR')} Donuts
-            </p>
-            <p className="my-3">
+            <p className="mt-4 font-pixel text-base text-mc-emerald text-shadow-mc">{formatM(p.amountM)}</p>
+            <p className="mt-1 text-xs text-ink-400">de Donuts</p>
+
+            <p className="my-4">
               <span className="price-tag text-2xl">{formatEUR(priceForM(p.amountM))}</span>
             </p>
 
             <button type="button" onClick={() => handleAdd(p.amountM, p.id)} className="btn-primary w-full">
-              {addedId === p.id ? 'Ajouté !' : 'Ajouter au panier'}
+              {addedId === p.id ? 'Ajouté !' : 'Ajouter'}
             </button>
           </div>
         ))}
       </div>
 
-      <div className="card relative mx-auto max-w-lg overflow-hidden p-7">
+      <div className="panel panel-raised mx-auto max-w-lg p-6">
         <div className="mb-5 flex items-center gap-3">
-          <DonutLogo size={52} variant="gold" className="animate-float" />
+          <DonutLogo size={44} variant="purple" className="animate-bob" />
           <div>
-            <h2 className="font-display text-2xl font-semibold">Montant personnalisé</h2>
-            <p className="text-sm text-donut-choco/70">Le prix suit exactement le même taux.</p>
+            <h2 className="font-pixel text-[17px] text-white text-shadow-mc">MONTANT LIBRE</h2>
+            <p className="mt-2 text-xs text-ink-400">Même taux, au Donut près.</p>
           </div>
         </div>
 
@@ -83,11 +74,11 @@ export default function MoneyShop() {
             className="field flex-1 font-display text-lg"
             aria-label="Montant en millions de Donuts"
           />
-          <span className="font-display text-lg font-semibold">M</span>
+          <span className="font-pixel text-base text-ink-300">M</span>
         </div>
 
-        <p className="mb-5">
-          <span className="price-tag text-2xl">{formatEUR(priceForM(custom))}</span>
+        <p className="mb-5 text-center">
+          <span className="price-tag text-3xl">{formatEUR(priceForM(custom))}</span>
         </p>
 
         <div className="relative">

@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import DonutLogo from './DonutLogo';
+import PixelIcon from './PixelIcon';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -34,15 +34,17 @@ export default function AdminLogin() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card animate-pop-in space-y-4 p-7">
+    <form onSubmit={handleSubmit} className="panel panel-raised animate-pop-in space-y-5 p-7">
       <div className="text-center">
-        <DonutLogo size={72} variant="choco" className="mx-auto animate-float" />
-        <h1 className="mt-3 font-display text-2xl font-bold">Espace admin</h1>
+        <span className="slot mx-auto !h-16 !w-16 !cursor-default">
+          <PixelIcon name="netheriteBlock" size={44} className="animate-bob" />
+        </span>
+        <h1 className="mc-title-purple mt-4 text-2xl">ESPACE ADMIN</h1>
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-semibold" htmlFor="admin-password">
-          Mot de passe admin
+        <label className="mb-1.5 block font-display text-xs font-semibold uppercase text-ink-300" htmlFor="admin-password">
+          Mot de passe
         </label>
         <input
           id="admin-password"
@@ -55,7 +57,7 @@ export default function AdminLogin() {
       </div>
 
       {error && (
-        <p className="animate-fade-in rounded-2xl bg-donut-coral/15 px-4 py-2 text-sm font-semibold text-donut-coral">
+        <p className="animate-fade-in border-2 border-mc-redstone/50 bg-mc-redstone/15 px-4 py-2 text-sm font-semibold text-mc-redstone">
           {error}
         </p>
       )}

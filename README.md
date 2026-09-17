@@ -6,8 +6,8 @@ Boutique communautaire (non-officielle) pour vendre de l'argent et des items du 
 
 ## Fonctionnalités
 
-- **Argent** (`/argent`) — packs prédéfinis + montant personnalisé, calculés au même tarif que la boutique (500 M = 15 €, proportionnel à tout montant).
-- **Items** (`/items`) — uniquement des items haut de gamme, dont le prix en euros est calculé automatiquement à partir de leur valeur en jeu (millions de Donuts), au même taux que l'argent. Une élytre à 500 M coûte donc 15 €, comme un pack d'argent de 500 M.
+- **Argent** (`/argent`) — packs prédéfinis + montant personnalisé, calculés au même tarif que la boutique (500 M = 10 €, proportionnel à tout montant).
+- **Items** (`/items`) — uniquement des items haut de gamme, dont le prix en euros est calculé automatiquement à partir de leur valeur en jeu (millions de Donuts), au même taux que l'argent. Une élytre à 500 M coûte donc 10 €, comme un pack d'argent de 500 M.
 - **Shulker** (`/shulker`) — grille de 27 emplacements façon inventaire Minecraft : on clique sur une case pour choisir un item cher, on ajuste les quantités (dans la limite du stack réel de l'item), puis on ajoute la Shulker composée au panier.
 - **Panier** (`/panier`) — récapitulatif, quantités modifiables, puis commande : le client doit saisir son **pseudo Minecraft deux fois** (les deux doivent correspondre) avant de pouvoir envoyer sa commande. Un numéro de commande est généré.
 - **Admin** (`/admin`) — protégé par mot de passe (`ADMIN_PASSWORD`), liste toutes les commandes reçues et permet de changer leur statut (nouvelle / payée / livrée / annulée).
@@ -19,7 +19,7 @@ Aucun moyen de paiement en ligne n'est branché : la commande crée juste une de
 Tout part d'un seul taux de change dans `lib/pricing.ts` :
 
 ```ts
-export const RATE = 0.03; // € par Million de Donuts (500 M = 15 €)
+export const RATE = 0.02; // € par Million de Donuts (500 M = 10 €)
 ```
 
 Le catalogue d'items (nom, catégorie, icône, valeur en M, taille de stack) est dans `lib/catalog.ts`. Les prix en euros ne sont **jamais** stockés en dur : ils sont recalculés à partir de `valueM * RATE`, partout (site + serveur). Change `RATE` ou les `valueM` et tout se met à jour automatiquement. Les valeurs fournies par défaut sont des exemples à ajuster selon le marché réel du serveur.

@@ -1,9 +1,8 @@
 import { isAdminAuthed } from '@/lib/adminAuth';
 import { readOrders } from '@/lib/ordersStore';
 import AdminLogin from '@/components/AdminLogin';
-import AdminOrderRow from '@/components/AdminOrderRow';
-import DonutLogo from '@/components/DonutLogo';
-import { formatEUR } from '@/lib/pricing';
+import AdminDashboard from '@/components/AdminDashboard';
+import PixelIcon from '@/components/PixelIcon';
 
 export const metadata = { title: 'Admin — Donut Shop' };
 export const dynamic = 'force-dynamic';
@@ -18,44 +17,27 @@ export default async function AdminPage() {
   }
 
   const orders = await readOrders();
-  const pending = orders.filter((o) => o.status === 'nouvelle').length;
-  const revenue = orders
-    .filter((o) => o.status === 'payee' || o.status === 'livree')
-    .reduce((sum, o) => sum + o.totalEUR, 0);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <DonutLogo size={64} variant="choco" className="animate-float" />
+          <span className="panel panel-raised flex h-16 w-16 items-center justify-center">
+            <PixelIcon name="netheriteBlock" size={40} />
+          </span>
           <div>
-            <h1 className="font-display text-3xl font-bold">
-              <span className="title-gradient">Commandes</span>
-            </h1>
-            <p className="text-sm text-donut-choco/70">
-              {orders.length} au total · {pending} en attente · {formatEUR(revenue)} encaissés
-            </p>
+            <h1 className="mc-title-purple text-3xl sm:text-4xl">PANEL ADMIN</h1>
+            <p className="mt-2 text-sm text-ink-400">{orders.length} commande(s) enregistrée(s)</p>
           </div>
         </div>
         <form action="/api/admin/logout" method="post">
-          <button type="submit" className="btn-secondary text-sm">
+          <button type="submit" className="btn-mc !text-xs">
             Déconnexion
           </button>
         </form>
       </div>
 
-      {orders.length === 0 ? (
-        <div className="card p-12 text-center">
-          <DonutLogo size={96} className="mx-auto animate-float opacity-60" />
-          <p className="mt-4 font-display text-xl">Aucune commande pour le moment.</p>
-        </div>
-      ) : (
-        <div className="stagger space-y-4">
-          {orders.map((order) => (
-            <AdminOrderRow key={order.id} order={order} />
-          ))}
-        </div>
-      )}
+      <AdminDashboard orders={orders} />
     </div>
   );
 }

@@ -4,15 +4,17 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useCart } from './CartProvider';
 import DonutLogo from './DonutLogo';
+import PixelIcon from './PixelIcon';
+import { formatEUR } from '@/lib/pricing';
 
 const LINKS = [
-  { href: '/argent', label: 'Argent' },
-  { href: '/items', label: 'Items' },
-  { href: '/shulker', label: 'Shulker' },
+  { href: '/argent', label: 'Argent', sprite: 'donut' },
+  { href: '/items', label: 'Items', sprite: 'sword' },
+  { href: '/shulker', label: 'Shulker', sprite: 'shulker' },
 ];
 
 export default function Header() {
-  const { lines } = useCart();
+  const { lines, total } = useCart();
   const count = lines.reduce((sum, l) => sum + l.qty, 0);
   const [bump, setBump] = useState(false);
   const prevCount = useRef(count);
@@ -28,33 +30,33 @@ export default function Header() {
   }, [count]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-donut-choco/90 text-donut-cream backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b-2 border-night-900 bg-night-800/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="group flex shrink-0 items-center gap-2.5">
-          <span className="transition-transform duration-500 group-hover:rotate-[18deg] group-hover:scale-110">
-            <DonutLogo size={38} title="Donut Shop" />
+        <Link href="/" className="group flex shrink-0 items-center gap-3">
+          <span className="transition-transform duration-200 group-hover:-translate-y-1">
+            <DonutLogo size={36} title="Donut Shop" />
           </span>
-          <span className="font-display text-lg font-bold tracking-wide sm:text-xl">
-            Donut<span className="text-donut-glaze"> Shop</span>
+          <span className="font-pixel text-[17px] leading-tight text-white text-shadow-mc sm:text-sm">
+            DONUT<span className="text-mc-pink"> SHOP</span>
           </span>
         </Link>
 
-        <nav className="hidden gap-7 sm:flex">
+        <nav className="hidden gap-8 sm:flex">
           {LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className="nav-link">
+            <Link key={l.href} href={l.href} className="nav-link flex items-center gap-2">
+              <PixelIcon name={l.sprite} size={18} />
               {l.label}
             </Link>
           ))}
         </nav>
 
-        <Link
-          href="/panier"
-          className="relative shrink-0 rounded-full bg-gradient-to-br from-donut-glaze to-donut-pinkDark px-4 py-2 font-semibold text-white shadow-pill transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
-        >
-          Panier
+        <Link href="/panier" className="btn-primary group shrink-0 !px-4 !py-2">
+          <PixelIcon name="shulker" size={18} />
+          <span className="hidden sm:inline">{count > 0 ? formatEUR(total) : 'Panier'}</span>
+          <span className="sm:hidden">Panier</span>
           {count > 0 && (
             <span
-              className={`absolute -right-2 -top-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-donut-chocoDark px-1.5 text-xs font-bold text-white ring-2 ring-donut-glaze ${
+              className={`absolute -right-2 -top-2 flex h-6 min-w-6 items-center justify-center border-2 border-night-900 bg-mc-emerald px-1 font-pixel text-[13px] text-night-900 ${
                 bump ? 'animate-badge-pop' : ''
               }`}
             >
@@ -64,10 +66,16 @@ export default function Header() {
         </Link>
       </div>
 
-      <nav className="flex justify-around border-t border-white/10 py-2 sm:hidden">
+      {/* Hotbar mobile */}
+      <nav className="flex border-t-2 border-night-900 sm:hidden">
         {LINKS.map((l) => (
-          <Link key={l.href} href={l.href} className="text-sm font-medium text-donut-cream/90">
-            {l.label}
+          <Link
+            key={l.href}
+            href={l.href}
+            className="flex flex-1 flex-col items-center gap-1 border-r-2 border-night-900 py-2 last:border-r-0 active:bg-night-700"
+          >
+            <PixelIcon name={l.sprite} size={20} />
+            <span className="font-display text-[11px] uppercase text-ink-300">{l.label}</span>
           </Link>
         ))}
       </nav>
